@@ -30,7 +30,7 @@ export default function Rentals() {
 
 
     const InitializePropertiesContract = async () => {
-      const contractAddress = "0x3C7A6F47E3499419Fe889072a6B8CF3A4F9a6D92";
+      const contractAddress = "0x330D0349ed3c5A8a212CC15EeBA92A6b4807dDF4";
       const contractABI = Moken.abi;
       provider = new ethers.BrowserProvider(window.ethereum);
       signer = await provider.getSigner();

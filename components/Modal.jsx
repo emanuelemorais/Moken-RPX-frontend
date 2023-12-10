@@ -7,8 +7,6 @@ import { useMetaMask } from '../contexts/WalletContext';
 const Modal = ({ opened, closeModal }) => {
     const { account } = useMetaMask();
 
-
-
     return opened ? (
         <div className="z-100 fixed bg-white flex flex-1 flex-col items-center w-full min-h-screen h-full py-8 px-4">
             <div className="w-full md:w-1/3 flex flex-col justify-center items-center">
@@ -35,7 +33,7 @@ const Modal = ({ opened, closeModal }) => {
                                 className="w-full underline text-md font-semibold text-center"
                                 
                             >
-                                {account.substring(0, 6) + "..." + account.substring(37, 42)}
+                                {account?.substring(0, 6) + "..." + account?.substring(37, 42)}
                             </p>
 
                         </div>

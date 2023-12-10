@@ -28,7 +28,7 @@ export default function Home() {
 
 
     const InitializePropertiesContract = async () => {
-      const contractAddress = "0x3C7A6F47E3499419Fe889072a6B8CF3A4F9a6D92";
+      const contractAddress = "0x330D0349ed3c5A8a212CC15EeBA92A6b4807dDF4";
       const contractABI = Moken.abi;
       provider = new ethers.BrowserProvider(window.ethereum);
       signer = await provider.getSigner();
@@ -38,7 +38,6 @@ export default function Home() {
         signer
       );
 
-      console.log("contract", contract);
       setPropertyContract(contract);
 
       return contract;
@@ -52,6 +51,7 @@ export default function Home() {
         console.log("initialized properties contract");
 
         const properties = await property_contract.getAllProperties();
+        console.log(properties)
         console.log("got all properties");
 
         let id = 0;
@@ -77,7 +77,6 @@ export default function Home() {
         }));
         setRentals(rentalData);
         console.log(rentalData);
-        setFilteredRentals(rentalData);
       } catch (error) {
         console.error('Error fetching rentals:', error);
       }
