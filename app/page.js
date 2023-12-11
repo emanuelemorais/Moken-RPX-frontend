@@ -50,9 +50,25 @@ export default function Home() {
         const property_contract = await InitializePropertiesContract();
         console.log("initialized properties contract");
 
-        const properties = await property_contract.getAllProperties();
+        let properties = await property_contract.getAllProperties();
         console.log(properties)
         console.log("got all properties");
+
+        let itemsToRemove = [
+          "0x3c7828F277000DFFa2876b997Edb4c2f92E2c40b",
+          "0xb8eBf3aa6c7fbbbbE7ED74464BFe7C03fa62895E",
+          "0xD808867510D8B5EE4a4EB52a3F5e8B94f1b71Be6",
+          "0x6985bF2D27060D9eb635529935d32C2Db5b5E024",
+          "0x330D0349ed3c5A8a212CC15EeBA92A6b4807dDF4",
+          "0x2Cb3d0fcC8B48b577C67A4d122b20Ca825537Ade",
+          "0x4FA2F29De8794667f4f3cf5229635Cbf9810A3A9",
+          "0x6e2F43c7b7bEC11c606fACEFE4d03311e838ECE4",
+          "0x73f998db7386FbFE07328C8e09c5538FaC09Ff5f",
+          "0x765803A62CA64740e7B24D089e2C96dFc826087d",
+          '0x6EEf32F01239fbEdd2A351B2147d2193a1037044'
+        ];
+
+        properties = properties.filter((item) => !itemsToRemove.includes(item));
 
         let id = 0;
         const rentalData = await Promise.all(properties.map(async (address) => {

@@ -17,6 +17,9 @@ export default function Rentals() {
   const [cid, setCid] = useState("");
   const [finalCid, setFinalCid] = useState("");
   const { account, connectMetaMask } = useMetaMask();
+  const [price, setPrice] = useState(0);
+  const [feedbackMessage, setFeedbackMessage] = useState(""); // Add feedback message state
+
 
   const [propertyData, setPropertyData] = useState({
     type: "House", // Default to 'House'
@@ -64,9 +67,10 @@ export default function Rentals() {
         }
       );
       const json = await res.json();
-      console.log(json);
       const { IpfsHash } = json;
-      setCid(IpfsHash);
+      console.log('my ipfs:  ' + IpfsHash)
+      await pinJson(IpfsHash)
+
     } catch (e) {
       console.log(e);
       alert("Trouble uploading file");
@@ -74,7 +78,7 @@ export default function Rentals() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     if (name == "bedrooms" || name == "size") {
       value = parseInt(value);
     }
@@ -82,9 +86,11 @@ export default function Rentals() {
     setPropertyData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const pinJson = async () => {
+  const pinJson = async (ipfs) => {
+    console.log("pinning now")
     let data = propertyData;
-    data.image = `https://ipfs.io/ipfs/${cid}`;
+    data.image = `https://ipfs.io/ipfs/${ipfs}`;
+    console.log('data to be pinned: ' + JSON.stringify(data))
 
     const res = await fetch("https://api.pinata.cloud/pinning/pinJSONToIPFS", {
       method: "POST",
@@ -95,8 +101,16 @@ export default function Rentals() {
       body: JSON.stringify(data),
     });
     const json = await res.json();
-    setFinalCid(json.IpfsHash);
-    console.log(json);
+    console.log('json: ' + JSON.stringify(json))
+    const response = await propertyContract.newProperty("name", "symbol", `https://ipfs.io/ipfs/${json.IpfsHash}`, price, account);
+    console.log(response)
+    console.log('new property created')
+    setFeedbackMessage("Property added successfully!");
+
+      // Clear the feedback message after a delay (e.g., 5 seconds)
+      setTimeout(() => {
+        setFeedbackMessage("");
+      }, 5000);
   };
 
   const handleImageUpload = (dataUrl) => {
@@ -127,17 +141,18 @@ export default function Rentals() {
 
   const save = async () => {
     await uploadFile(imageData);
-    await pinJson();
-    await propertyContract.newProperty("name", "symbol", `https://ipfs.io/ipfs/${finalCid}`, 500, account);
+    console.log('got the cid: ' + cid)
+
+    
   };
   return (
     <div className="">
       <Navbar />
       <div className="flex flex-col justify-center items-center mx-6 md:mx-36 my-8 md:my-16">
-        <div className="px-6 ">
+        <div className="">
           <span className="flex justify-between items-center">
-            <h1 className="mx-8 my-4 font-bold text-3xl pb-8">
-              Adicionar propriedade
+            <h1 className=" my-4 font-bold text-3xl pb-8">
+              Add property
             </h1>
           </span>
           {/* Input fields for property details */}
@@ -192,6 +207,18 @@ export default function Rentals() {
               onChange={handleInputChange}
             />
           </div>
+          <div className="my-4">
+            <label htmlFor="size" className="mr-2">
+              Price:
+            </label>
+            <input
+              type="number"
+              id="size"
+              name="size"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          </div>
           <ImageUploader onImageUpload={handleImageUpload} />
           {displayImage && (
             <img
@@ -201,7 +228,7 @@ export default function Rentals() {
             />
           )}
         </div>
-        <button onClick={save}>Adicionar</button>
+        <button className='bg-black text-white font-bold text-xl my-4 md:my-8 p-4 md:p-6 rounded-2xl hover:scale-95 duration-300' onClick={save}>Add</button>
       </div>
     </div>
   );
