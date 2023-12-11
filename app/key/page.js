@@ -12,7 +12,7 @@ const page = () => {
   return (
     <div className="h-screen">
       <Navbar />
-      <div className="flex flex-col justify-center items-center mx-6 md:mx-36 gap-2 mt-20">
+      <div className="flex flex-col justify-center items-center mx-6 md:mx-36 gap-2 mt-24">
         <h1 className="font-bold text-2xl">Your Key</h1>
         <p className="mb-4">
           Use this QR Code to open the door to your rented property.
